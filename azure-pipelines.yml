@@ -6,22 +6,25 @@
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
+# variables:
+# - group: Deploy-Info
 
-variables:
-- group: Deploy-Info
-
-steps:
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: $(AzureResourceManagerConnection)
-    subscriptionId: $(Subscription)
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'demo-arm-rg'
-    location: 'East US 2'
-    templateLocation: 'Linked artifact'
-    csmFile: 'azuredeploy.json'
-    overrideParameters: '-projectName demoarm'
-    deploymentMode: 'Incremental'
+stages:
+- stage: Build
+  jobs:
+     - job: Build_ARM
+       pool:
+          vmImage: ubuntu-latest
+       steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: $(AzureResourceManagerConnection)
+            subscriptionId: $(Subscription)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: 'demo-arm-rg'
+            location: 'East US 2'
+            templateLocation: 'Linked artifact'
+            csmFile: 'azuredeploy.json'
+            overrideParameters: '-projectName demoarm'
+            deploymentMode: 'Incremental'
