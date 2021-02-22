@@ -27,4 +27,29 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: 'azuredeploy.json'
             overrideParameters: '-projectName demoarm'
-            deploymentMode: 'Incremental'
+            deploymentMode: Validation
+
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+     - deployment: deploy_ARM
+       environment: 'development'
+       pool:
+          vmImage: ubuntu-latest
+       strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: $(AzureResourceManagerConnection)
+                  subscriptionId: $(Subscription)
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: 'demo-arm-rg'
+                  location: 'East US 2'
+                  templateLocation: 'Linked artifact'
+                  csmFile: 'azuredeploy.json'
+                  overrideParameters: '-projectName demoarm'
+                  deploymentMode: Incremental
