@@ -23,5 +23,5 @@ steps:
     location: 'East US 2'
     templateLocation: 'Linked artifact'
     csmFile: 'azuredeploy.json'
-    overrideParameters: '-projectName ''demoarm'''
+    overrideParameters: '-projectName demoarm'
     deploymentMode: 'Incremental'

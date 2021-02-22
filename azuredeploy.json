@@ -26,13 +26,13 @@
       }
     },
     "variables": {
-      "storageAccountName": "[concat(parameters('projectName'), uniqueString(resourceGroup().id))]",
+      "storageAccountName": "[concat(parameters('projectName'), substring(uniqueString(resourceGroup().id)), 0, 16)]",
       "webAppName": "[concat(parameters('projectName'), 'WebApp')]",
       "appServicePlanName": "[concat(parameters('projectName'), 'Plan')]"
     },
     "resources": [
       {
-        "name": "linkedTemplate",
+        "name": "StoragelinkedTemplate",
         "type": "Microsoft.Resources/deployments",
         "apiVersion": "2020-10-01",
         "properties": {
