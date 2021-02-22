@@ -10,44 +10,29 @@ variables:
  - group: Deploy-Info
 
 stages:
-- stage: Build
-  jobs:
-     - job: Build_ARM
-       pool:
-          vmImage: ubuntu-latest
-       steps:
-        - task: Armory@2
-          inputs:
-            toolVersion: 'LatestPreRelease'
-            targetDirectory: '$(Build.SourcesDirectory)'
-            targetFiles: 'f|**\*.json;-|.gdn\**;'
-
-        - task: securedevelopmentteam.vss-secure-development-tools.build-task-report.SdtReport@2
-          displayName: 'Create Security Analysis Report'
-          inputs:
-            GdnExportSarifFile: false
-            GdnExportHtmlFile: true
-            GdnExportOutputBaselineFile: '$(Build.SourcesDirectory)\outputbaselinefile'
-            GdnExportOutputBaseline: baselinename
-            GdnExportOutputSuppressionFile: '$(Build.SourcesDirectory)\SuppressionFile'
-            GdnExportAllTools: false
-            GdnExportGdnToolArmory: true
-
-        - task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@3
-          displayName: 'Publish Security Analysis Logs'
-
-        - task: AzureResourceManagerTemplateDeployment@3
-          inputs:
-            deploymentScope: 'Resource Group'
-            azureResourceManagerConnection: $(AzureResourceManagerConnection)
-            subscriptionId: $(Subscription)
-            action: 'Create Or Update Resource Group'
-            resourceGroupName: 'demo-arm-rg'
-            location: 'East US 2'
-            templateLocation: 'Linked artifact'
-            csmFile: 'azuredeploy.json'
-            overrideParameters: '-projectName demoarm'
-            deploymentMode: Validation
+# - stage: Build
+#   jobs:
+#      - job: Build_ARM
+#        pool:
+#           vmImage: ubuntu-latest
+#        steps:
+#         - task: Armory@2
+#           inputs:
+#             toolVersion: 'LatestPreRelease'
+#             targetDirectory: '$(Build.SourcesDirectory)'
+#             targetFiles: 'f|**\*.json;-|.gdn\**;'
+#         - task: AzureResourceManagerTemplateDeployment@3
+#           inputs:
+#             deploymentScope: 'Resource Group'
+#             azureResourceManagerConnection: $(AzureResourceManagerConnection)
+#             subscriptionId: $(Subscription)
+#             action: 'Create Or Update Resource Group'
+#             resourceGroupName: 'demo-arm-rg'
+#             location: 'East US 2'
+#             templateLocation: 'Linked artifact'
+#             csmFile: 'azuredeploy.json'
+#             overrideParameters: '-projectName demoarm'
+#             deploymentMode: Validation
 
 
 - stage: Deploy
@@ -56,7 +41,7 @@ stages:
      - deployment: deploy_ARM
        environment: 'development'
        pool:
-          vmImage: ubuntu-latest
+          vmImage: vs2017-win2016
        strategy:
         runOnce:
           deploy:
@@ -75,3 +60,6 @@ stages:
                   csmFile: 'azuredeploy.json'
                   overrideParameters: '-projectName demoarm'
                   deploymentMode: Incremental
+              - task: AzSKARMTemplateChecker@4
+                inputs:
+                  ARMTemplateFilePath: '.'
