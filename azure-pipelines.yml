@@ -6,8 +6,8 @@
 trigger:
 - main
 
-# variables:
-# - group: Deploy-Info
+variables:
+ - group: Deploy-Info
 
 stages:
 - stage: Build
