@@ -10,29 +10,29 @@ variables:
  - group: Deploy-Info
 
 stages:
-# - stage: Build
-#   jobs:
-#      - job: Build_ARM
-#        pool:
-#           vmImage: ubuntu-latest
-#        steps:
-#         - task: Armory@2
-#           inputs:
-#             toolVersion: 'LatestPreRelease'
-#             targetDirectory: '$(Build.SourcesDirectory)'
-#             targetFiles: 'f|**\*.json;-|.gdn\**;'
-#         - task: AzureResourceManagerTemplateDeployment@3
-#           inputs:
-#             deploymentScope: 'Resource Group'
-#             azureResourceManagerConnection: $(AzureResourceManagerConnection)
-#             subscriptionId: $(Subscription)
-#             action: 'Create Or Update Resource Group'
-#             resourceGroupName: 'demo-arm-rg'
-#             location: 'East US 2'
-#             templateLocation: 'Linked artifact'
-#             csmFile: 'azuredeploy.json'
-#             overrideParameters: '-projectName demoarm'
-#             deploymentMode: Validation
+- stage: Build
+  jobs:
+     - job: Build_ARM
+       pool:
+          vmImage: ubuntu-latest
+       steps:
+        - task: Armory@2
+          inputs:
+            toolVersion: 'LatestPreRelease'
+            targetDirectory: '$(Build.SourcesDirectory)'
+            targetFiles: 'f|**\*.json;-|.gdn\**;'
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: $(AzureResourceManagerConnection)
+            subscriptionId: $(Subscription)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: 'demo-arm-rg'
+            location: 'East US 2'
+            templateLocation: 'Linked artifact'
+            csmFile: 'azuredeploy.json'
+            overrideParameters: '-projectName demoarm'
+            deploymentMode: Validation
 
 
 - stage: Deploy
@@ -48,18 +48,15 @@ stages:
             steps:
               - checkout: self
               - download: none
-              # - task: AzureResourceManagerTemplateDeployment@3
-              #   inputs:
-              #     deploymentScope: 'Resource Group'
-              #     azureResourceManagerConnection: $(AzureResourceManagerConnection)
-              #     subscriptionId: $(Subscription)
-              #     action: 'Create Or Update Resource Group'
-              #     resourceGroupName: 'demo-arm-rg'
-              #     location: 'East US 2'
-              #     templateLocation: 'Linked artifact'
-              #     csmFile: 'azuredeploy.json'
-              #     overrideParameters: '-projectName demoarm'
-              #     deploymentMode: Incremental
-              - task: AzSKARMTemplateChecker@4
+              - task: AzureResourceManagerTemplateDeployment@3
                 inputs:
-                  ARMTemplateFilePath: '.'
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: $(AzureResourceManagerConnection)
+                  subscriptionId: $(Subscription)
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: 'demo-arm-rg'
+                  location: 'East US 2'
+                  templateLocation: 'Linked artifact'
+                  csmFile: 'azuredeploy.json'
+                  overrideParameters: '-projectName demoarm'
+                  deploymentMode: Incremental
