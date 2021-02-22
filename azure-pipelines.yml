@@ -13,9 +13,6 @@ variables:
 - group: Deploy-Info
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
