@@ -16,6 +16,26 @@ stages:
        pool:
           vmImage: ubuntu-latest
        steps:
+        - task: Armory@2
+          inputs:
+            toolVersion: 'LatestPreRelease'
+            targetDirectory: '$(Build.SourcesDirectory)'
+            targetFiles: 'f|**\*.json;-|.gdn\**;'
+
+        - task: securedevelopmentteam.vss-secure-development-tools.build-task-report.SdtReport@2
+          displayName: 'Create Security Analysis Report'
+          inputs:
+            GdnExportSarifFile: false
+            GdnExportHtmlFile: true
+            GdnExportOutputBaselineFile: '$(Build.SourcesDirectory)\outputbaselinefile'
+            GdnExportOutputBaseline: baselinename
+            GdnExportOutputSuppressionFile: '$(Build.SourcesDirectory)\SuppressionFile'
+            GdnExportAllTools: false
+            GdnExportGdnToolArmory: true
+
+        - task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@3
+          displayName: 'Publish Security Analysis Logs'
+
         - task: AzureResourceManagerTemplateDeployment@3
           inputs:
             deploymentScope: 'Resource Group'
