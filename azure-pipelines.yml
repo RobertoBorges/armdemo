@@ -13,7 +13,15 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'PFE-ROBORGES(dea5dcc6-1a1a-4694-8e6c-f340da9c7ea1)'
+    subscriptionId: 'dea5dcc6-1a1a-4694-8e6c-f340da9c7ea1'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'demo-arm-rg'
+    location: 'East US 2'
+    templateLocation: 'Linked artifact'
+    csmFile: 'azuredeploy.json'
+    overrideParameters: '-projectName ''demoarm'''
+    deploymentMode: 'Incremental'
