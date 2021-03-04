@@ -25,6 +25,8 @@ stages:
 
               ls $(Build.SourcesDirectory)
 
+              echo $(Build.SourcesDirectory)
+
 #         - task: AzureResourceManagerTemplateDeployment@3
 #           inputs:
 #             deploymentScope: 'Resource Group'
