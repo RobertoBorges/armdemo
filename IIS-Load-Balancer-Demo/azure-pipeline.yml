@@ -18,7 +18,13 @@ stages:
        steps:
         - task: CmdLine@2
           inputs:
-            script: 'tree'
+            script: |
+              tree
+              
+              cd $(Build.SourcesDirectory)
+
+              ls $(Build.SourcesDirectory)
+
 #         - task: AzureResourceManagerTemplateDeployment@3
 #           inputs:
 #             deploymentScope: 'Resource Group'
