@@ -23,7 +23,7 @@ stages:
 
               echo $(Build.SourcesDirectory)
 
-              cat $(Build.SourcesDirectory)/IIS-Load-Balancer-Demo/azuredeploy.json
+              cat $(Build.SourcesDirectory)/IIS-Load-Balancer-Demo/azure-pipeline.yml
 
 #         - task: AzureResourceManagerTemplateDeployment@3
 #           inputs:
