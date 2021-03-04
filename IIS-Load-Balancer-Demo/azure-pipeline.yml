@@ -10,21 +10,12 @@ variables:
  - group: Deploy-Info
 
 stages:
-- stage: Build
-  jobs:
-     - job: Build_ARM
-       pool:
-          vmImage: ubuntu-latest
-       steps:
-        - task: CmdLine@2
-          inputs:
-            script: |
-              tree
-
-              echo $(Build.SourcesDirectory)
-
-              cat $(Build.SourcesDirectory)/IIS-Load-Balancer-Demo/azure-pipeline.yml
-
+# - stage: Build
+#   jobs:
+#      - job: Build_ARM
+#        pool:
+#           vmImage: ubuntu-latest
+#        steps:
 #         - task: AzureResourceManagerTemplateDeployment@3
 #           inputs:
 #             deploymentScope: 'Resource Group'
@@ -39,36 +30,36 @@ stages:
 #             deploymentMode: Validation
 
 
-# - stage: Deploy
-#   dependsOn: Build
-#   jobs:
-#      - deployment: deploy_ARM
-#        environment: 'development'
-#        pool:
-#           vmImage: vs2017-win2016
-#        variables:
-#        - group: Deploy-Info
-#        strategy:
-#         runOnce:
-#           deploy:
-#             steps:
-#               - checkout: self
-#               - download: none
-#               - task: AzureCLI@2
-#                 inputs:
-#                   azureSubscription: $(AzureResourceManagerConnection)
-#                   scriptType: 'ps'
-#                   scriptLocation: 'inlineScript'
-#                   inlineScript: |
-#                     $password="P@ssword1" | ConvertTo-SecureString -AsPlainText -Force
+- stage: Deploy
+  # dependsOn: Build
+  jobs:
+     - deployment: deploy_ARM
+       environment: 'development'
+       pool:
+          vmImage: vs2017-win2016
+       variables:
+       - group: Deploy-Info
+       strategy:
+        runOnce:
+          deploy:
+            steps:
+              - checkout: self
+              - download: none
+              - task: AzureCLI@2
+                inputs:
+                  azureSubscription: $(AzureResourceManagerConnection)
+                  scriptType: 'ps'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: |
+                    $password="P@ssword1" | ConvertTo-SecureString -AsPlainText -Force
                     
-#                     az group create --name mydemodeployement --location canadaeast
+                    az group create --name mydemodeployement --location canadaeast
                     
-#                     az deployment group create `
-#                     --name demodeployment  `
-#                     --resource-group mydemodeployement `
-#                     --template-file demo.json `
-#                     --parameters virtualMachine_vm1_name=vm001 virtualMachine_vm2_name=vm002 loadBalancers_lbldemo_name=lbldemo `
-#                     networkInterfaces_vm1160_name=vm1160 networkInterfaces_vm2781_name=vm2781 `
-#                     publicIPAddresses_loadbalancer_name=lblipname networkSecurityGroup_name=nsgdemo01 virtualNetworks_name=demovnet `
-#                     bastionHosts_name=bastiondemo publicIPAddresses_bastion_name=ipbastiondemo adminpassword=$password
+                    az deployment group create `
+                    --name demodeployment  `
+                    --resource-group mydemodeployement `
+                    --template-file $(Build.SourcesDirectory)/IIS-Load-Balancer-Demo/demo.json `
+                    --parameters virtualMachine_vm1_name=vm001 virtualMachine_vm2_name=vm002 loadBalancers_lbldemo_name=lbldemo `
+                    networkInterfaces_vm1160_name=vm1160 networkInterfaces_vm2781_name=vm2781 `
+                    publicIPAddresses_loadbalancer_name=lblipname networkSecurityGroup_name=nsgdemo01 virtualNetworks_name=demovnet `
+                    bastionHosts_name=bastiondemo publicIPAddresses_bastion_name=ipbastiondemo adminpassword=$password
