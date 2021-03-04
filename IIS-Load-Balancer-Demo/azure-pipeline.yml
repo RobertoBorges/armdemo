@@ -37,6 +37,8 @@ stages:
        environment: 'development'
        pool:
           vmImage: vs2017-win2016
+       variables:
+       - group: Deploy-Info
        strategy:
         runOnce:
           deploy:
@@ -45,7 +47,7 @@ stages:
               - download: none
               - task: AzureCLI@2
                 inputs:
-                  azureSubscription: 'PFE-ROBORGES(dea5dcc6-1a1a-4694-8e6c-f340da9c7ea1)'
+                  azureSubscription: $(AzureResourceManagerConnection)
                   scriptType: 'ps'
                   scriptLocation: 'inlineScript'
                   inlineScript: |
