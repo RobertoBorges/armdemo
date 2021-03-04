@@ -27,6 +27,8 @@ stages:
 
               echo $(Build.SourcesDirectory)
 
+              cat $(Build.SourcesDirectory)/IIS-Load-Balancer-Demo/azuredeploy.json
+
 #         - task: AzureResourceManagerTemplateDeployment@3
 #           inputs:
 #             deploymentScope: 'Resource Group'
@@ -36,7 +38,7 @@ stages:
 #             resourceGroupName: 'demo-arm-rg'
 #             location: 'East US 2'
 #             templateLocation: 'Linked artifact'
-#             csmFile: '$(Build.SourcesDirectory)\IIS-Load-Balancer-Demo\azuredeploy.json'
+#             csmFile: '$(Build.SourcesDirectory)/IIS-Load-Balancer-Demo/azuredeploy.json'
 #             overrideParameters: '-projectName demoarm'
 #             deploymentMode: Validation
 
