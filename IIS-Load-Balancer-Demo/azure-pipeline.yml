@@ -16,50 +16,53 @@ stages:
        pool:
           vmImage: ubuntu-latest
        steps:
-        - task: AzureResourceManagerTemplateDeployment@3
+        - task: CmdLine@2
           inputs:
-            deploymentScope: 'Resource Group'
-            azureResourceManagerConnection: $(AzureResourceManagerConnection)
-            subscriptionId: $(Subscription)
-            action: 'Create Or Update Resource Group'
-            resourceGroupName: 'demo-arm-rg'
-            location: 'East US 2'
-            templateLocation: 'Linked artifact'
-            csmFile: '$(Build.SourcesDirectory)\IIS-Load-Balancer-Demo\azuredeploy.json'
-            overrideParameters: '-projectName demoarm'
-            deploymentMode: Validation
+            script: 'tree'
+#         - task: AzureResourceManagerTemplateDeployment@3
+#           inputs:
+#             deploymentScope: 'Resource Group'
+#             azureResourceManagerConnection: $(AzureResourceManagerConnection)
+#             subscriptionId: $(Subscription)
+#             action: 'Create Or Update Resource Group'
+#             resourceGroupName: 'demo-arm-rg'
+#             location: 'East US 2'
+#             templateLocation: 'Linked artifact'
+#             csmFile: '$(Build.SourcesDirectory)\IIS-Load-Balancer-Demo\azuredeploy.json'
+#             overrideParameters: '-projectName demoarm'
+#             deploymentMode: Validation
 
 
-- stage: Deploy
-  dependsOn: Build
-  jobs:
-     - deployment: deploy_ARM
-       environment: 'development'
-       pool:
-          vmImage: vs2017-win2016
-       variables:
-       - group: Deploy-Info
-       strategy:
-        runOnce:
-          deploy:
-            steps:
-              - checkout: self
-              - download: none
-              - task: AzureCLI@2
-                inputs:
-                  azureSubscription: $(AzureResourceManagerConnection)
-                  scriptType: 'ps'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: |
-                    $password="P@ssword1" | ConvertTo-SecureString -AsPlainText -Force
+# - stage: Deploy
+#   dependsOn: Build
+#   jobs:
+#      - deployment: deploy_ARM
+#        environment: 'development'
+#        pool:
+#           vmImage: vs2017-win2016
+#        variables:
+#        - group: Deploy-Info
+#        strategy:
+#         runOnce:
+#           deploy:
+#             steps:
+#               - checkout: self
+#               - download: none
+#               - task: AzureCLI@2
+#                 inputs:
+#                   azureSubscription: $(AzureResourceManagerConnection)
+#                   scriptType: 'ps'
+#                   scriptLocation: 'inlineScript'
+#                   inlineScript: |
+#                     $password="P@ssword1" | ConvertTo-SecureString -AsPlainText -Force
                     
-                    az group create --name mydemodeployement --location canadaeast
+#                     az group create --name mydemodeployement --location canadaeast
                     
-                    az deployment group create `
-                    --name demodeployment  `
-                    --resource-group mydemodeployement `
-                    --template-file demo.json `
-                    --parameters virtualMachine_vm1_name=vm001 virtualMachine_vm2_name=vm002 loadBalancers_lbldemo_name=lbldemo `
-                    networkInterfaces_vm1160_name=vm1160 networkInterfaces_vm2781_name=vm2781 `
-                    publicIPAddresses_loadbalancer_name=lblipname networkSecurityGroup_name=nsgdemo01 virtualNetworks_name=demovnet `
-                    bastionHosts_name=bastiondemo publicIPAddresses_bastion_name=ipbastiondemo adminpassword=$password
+#                     az deployment group create `
+#                     --name demodeployment  `
+#                     --resource-group mydemodeployement `
+#                     --template-file demo.json `
+#                     --parameters virtualMachine_vm1_name=vm001 virtualMachine_vm2_name=vm002 loadBalancers_lbldemo_name=lbldemo `
+#                     networkInterfaces_vm1160_name=vm1160 networkInterfaces_vm2781_name=vm2781 `
+#                     publicIPAddresses_loadbalancer_name=lblipname networkSecurityGroup_name=nsgdemo01 virtualNetworks_name=demovnet `
+#                     bastionHosts_name=bastiondemo publicIPAddresses_bastion_name=ipbastiondemo adminpassword=$password
