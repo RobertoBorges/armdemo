@@ -10,28 +10,8 @@ variables:
  - group: Deploy-Info
 
 stages:
-# - stage: Build
-#   jobs:
-#      - job: Build_ARM
-#        pool:
-#           vmImage: ubuntu-latest
-#        steps:
-#         - task: AzureResourceManagerTemplateDeployment@3
-#           inputs:
-#             deploymentScope: 'Resource Group'
-#             azureResourceManagerConnection: $(AzureResourceManagerConnection)
-#             subscriptionId: $(Subscription)
-#             action: 'Create Or Update Resource Group'
-#             resourceGroupName: 'demo-arm-rg'
-#             location: 'East US 2'
-#             templateLocation: 'Linked artifact'
-#             csmFile: '$(Build.SourcesDirectory)/IIS-Load-Balancer-Demo/azuredeploy.json'
-#             overrideParameters: '-projectName demoarm'
-#             deploymentMode: Validation
-
 
 - stage: Deploy
-  # dependsOn: Build
   jobs:
      - deployment: deploy_ARM
        environment: 'development'
